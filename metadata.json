@@ -1,0 +1,7 @@
+{
+  "name": "Auraweb - Fast Website Setup",
+  "description": "A streamlined onboarding platform for Ethiopian businesses to quickly submit requirements for custom website development, featuring a multi-step guided form and an admin dashboard.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}

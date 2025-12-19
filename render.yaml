@@ -1,0 +1,22 @@
+databases:
+  - name: auraweb_db
+    databaseName: auraweb_db
+    user: auraweb_user
+
+services:
+  - type: web
+    name: auraweb
+    runtime: python
+    buildCommand: "./build.sh"
+    startCommand: "cd backend && gunicorn auraweb_backend.wsgi:application"
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: auraweb_db
+          property: connectionString
+      - key: DJANGO_SECRET_KEY
+        generateValue: true
+      - key: DJANGO_DEBUG
+        value: "False"
+      - key: PYTHON_VERSION
+        value: 3.9.0
