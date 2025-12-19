@@ -15,7 +15,22 @@ import os
 import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# DEBUG: Print file system state to debug Render deployment
+print(f"DEBUG: BASE_DIR = {BASE_DIR}")
+try:
+    print(f"DEBUG: BASE_DIR content: {os.listdir(BASE_DIR)}")
+    parent = BASE_DIR.parent
+    print(f"DEBUG: Parent content: {os.listdir(parent)}")
+    dist_path = os.path.join(parent, 'dist')
+    if os.path.exists(dist_path):
+        print(f"DEBUG: dist content: {os.listdir(dist_path)}")
+    else:
+        print(f"DEBUG: dist directory NOT FOUND at {dist_path}")
+except Exception as e:
+    print(f"DEBUG: Error inspecting directories: {e}")
 
 
 # Quick-start development settings - unsuitable for production
@@ -71,7 +86,10 @@ ROOT_URLCONF = 'auraweb_backend.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, '..', 'dist')],
+        'DIRS': [
+            os.path.join(BASE_DIR, '..', 'dist'),
+            os.path.join(BASE_DIR, 'staticfiles'), # Fallback: check collected static files
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
