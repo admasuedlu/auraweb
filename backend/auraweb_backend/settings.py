@@ -71,7 +71,7 @@ ROOT_URLCONF = 'auraweb_backend.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR.parent / 'dist'],
+        'DIRS': [os.path.join(BASE_DIR, '..', 'dist')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -142,7 +142,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATICFILES_DIRS = [
-    BASE_DIR.parent / 'dist',
+    os.path.join(BASE_DIR, '..', 'dist'),
 ]
 
 STATIC_URL = 'static/'
