@@ -33,4 +33,9 @@ python backend/manage.py collectstatic --noinput
 echo "=== Running migrations ==="
 python backend/manage.py migrate
 
+# Create admin user (will skip if already exists)
+echo "=== Creating admin user ==="
+python backend/create_admin.py
+
 echo "=== Build complete ==="
+
