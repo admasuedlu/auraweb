@@ -12,6 +12,11 @@
 - **Solution**: Updated API URL to automatically detect production environment
 - **File**: `api.ts`
 
+### 3. **Email Field Validation** ✅
+- **Problem**: Form submission failing with 400 Bad Request when email field is empty
+- **Solution**: Made email field explicitly optional in the serializer
+- **File**: `backend/submissions/serializers.py`
+
 ## Next Steps
 
 ### Option 1: Auto-Deploy (Recommended)

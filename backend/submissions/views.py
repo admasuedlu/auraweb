@@ -9,6 +9,7 @@ import os
 from django.conf import settings
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
+from auraweb_backend.email_service import send_customer_confirmation, send_admin_notification
 
 class SubmissionViewSet(viewsets.ModelViewSet):
     queryset = Submission.objects.all().order_by('-submitted_at')
@@ -57,6 +58,17 @@ class SubmissionViewSet(viewsets.ModelViewSet):
             serializer = self.get_serializer(data=data)
             serializer.is_valid(raise_exception=True)
             self.perform_create(serializer)
+            
+            # Send email notifications
+            submission = serializer.instance
+            try:
+                send_customer_confirmation(submission)
+                send_admin_notification(submission)
+                print(f"✅ Emails sent for submission {submission.id}")
+            except Exception as e:
+                print(f"⚠️ Email sending failed: {e}")
+                # Don't fail the request if email fails
+            
             headers = self.get_success_headers(serializer.data)
             return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 

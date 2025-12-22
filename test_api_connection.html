@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Connection Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+
+        .test-box {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .success {
+            color: #16a34a;
+            font-weight: bold;
+        }
+
+        .error {
+            color: #dc2626;
+            font-weight: bold;
+        }
+
+        .info {
+            color: #2563eb;
+        }
+
+        button {
+            background: #2563eb;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+        }
+
+        pre {
+            background: #f3f4f6;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>🧪 API Connection Test</h1>
+
+    <div class="test-box">
+        <h2>Environment Detection</h2>
+        <p><strong>Current URL:</strong> <span id="currentUrl"></span></p>
+        <p><strong>Detected API URL:</strong> <span id="apiUrl" class="info"></span></p>
+    </div>
+
+    <div class="test-box">
+        <h2>Test API Connection</h2>
+        <button onclick="testConnection()">Test Connection</button>
+        <div id="result" style="margin-top: 20px;"></div>
+    </div>
+
+    <div class="test-box">
+        <h2>Test Form Submission</h2>
+        <button onclick="testSubmission()">Test Submit</button>
+        <div id="submitResult" style="margin-top: 20px;"></div>
+    </div>
+
+    <script>
+        // Same logic as api.ts
+        const API_URL = window.location.hostname === 'localhost'
+            ? 'http://localhost:8000/api'
+            : `${window.location.origin}/api`;
+
+        document.getElementById('currentUrl').textContent = window.location.href;
+        document.getElementById('apiUrl').textContent = API_URL;
+
+        async function testConnection() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '<p>Testing connection...</p>';
+
+            try {
+                const response = await fetch(`${API_URL}/portfolio/`);
+
+                if (response.ok) {
+                    const data = await response.json();
+                    resultDiv.innerHTML = `
+                        <p class="success">✅ Connection Successful!</p>
+                        <p>Status: ${response.status}</p>
+                        <p>Portfolio items found: ${data.length}</p>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <p class="error">❌ Connection Failed</p>
+                        <p>Status: ${response.status}</p>
+                        <p>Error: ${response.statusText}</p>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <p class="error">❌ Connection Error</p>
+                    <p>Error: ${error.message}</p>
+                    <p>This usually means CORS is blocking the request or the API is not running.</p>
+                `;
+            }
+        }
+
+        async function testSubmission() {
+            const resultDiv = document.getElementById('submitResult');
+            resultDiv.innerHTML = '<p>Testing form submission...</p>';
+
+            const testData = {
+                businessName: "Test Business",
+                businessType: "Company",
+                contactName: "Test User",
+                email: "test@example.com",
+                phone: "0911234567",
+                packageId: "business",
+                selectedServices: ["SEO Optimization", "Custom Domain"],
+                themeStyle: "Modern & Clean",
+                primaryColor: "#1e40af",
+                imageUrls: [],
+                additionalInfo: "This is a test submission"
+            };
+
+            try {
+                const formData = new FormData();
+                formData.append('data', JSON.stringify(testData));
+
+                const response = await fetch(`${API_URL}/submissions/`, {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    resultDiv.innerHTML = `
+                        <p class="success">✅ Submission Successful!</p>
+                        <p>Status: ${response.status}</p>
+                        <p>Submission ID: ${data.id}</p>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                } else {
+                    const errorText = await response.text();
+                    resultDiv.innerHTML = `
+                        <p class="error">❌ Submission Failed</p>
+                        <p>Status: ${response.status}</p>
+                        <p>Error: ${response.statusText}</p>
+                        <pre>${errorText}</pre>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <p class="error">❌ Submission Error</p>
+                    <p>Error: ${error.message}</p>
+                    <p>Check console for more details.</p>
+                `;
+                console.error('Submission error:', error);
+            }
+        }
+    </script>
+</body>
+
+</html>
