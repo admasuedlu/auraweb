@@ -22,15 +22,47 @@ from django.urls import path, include, re_path
 from django.views.generic import TemplateView
 from django.conf import settings
 from django.conf.urls.static import static
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
+from django.contrib.auth import authenticate
+from rest_framework.authtoken.models import Token
+import json
 
 from rest_framework.authtoken import views
+
+# Custom login view that's CSRF-exempt for API usage
+@csrf_exempt
+def api_login(request):
+    if request.method != 'POST':
+        return JsonResponse({'error': 'POST required'}, status=405)
+    
+    try:
+        data = json.loads(request.body)
+        username = data.get('username', '')
+        password = data.get('password', '')
+    except json.JSONDecodeError:
+        return JsonResponse({'error': 'Invalid JSON'}, status=400)
+    
+    user = authenticate(username=username, password=password)
+    
+    if user is not None:
+        token, created = Token.objects.get_or_create(user=user)
+        return JsonResponse({
+            'token': token.key,
+            'user_id': user.id,
+            'username': user.username
+        })
+    else:
+        return JsonResponse({'error': 'Invalid credentials'}, status=401)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('submissions.urls')),
     path('api/api-token-auth/', views.obtain_auth_token),
+    path('api/auth/login/', api_login, name='api_login'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 urlpatterns += [
     re_path(r'^.*$', TemplateView.as_view(template_name='index.html')),
 ]
+
