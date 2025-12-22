@@ -7,6 +7,7 @@ class SubmissionSerializer(serializers.ModelSerializer):
     packageId = serializers.CharField(source='package_id')
     businessName = serializers.CharField(source='business_name')
     businessType = serializers.CharField(source='business_type')
+    email = serializers.EmailField(required=False, allow_blank=True, allow_null=True)
     googleMapsLink = serializers.CharField(source='google_maps_link', required=False, allow_blank=True)
     aboutUs = serializers.CharField(source='about_us')
     workingHours = serializers.CharField(source='working_hours')
