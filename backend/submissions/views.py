@@ -22,7 +22,7 @@ class SubmissionViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_permissions(self):
-        if self.action in ['create', 'upload', 'payment_callback', 'verify_payment']:
+        if self.action in ['create', 'upload', 'payment_callback', 'verify_payment', 'track']:
             return [permissions.AllowAny()]
         return super().get_permissions()
 
@@ -209,6 +209,49 @@ class SubmissionViewSet(viewsets.ModelViewSet):
             'pending_payments': payment_pending,
             'by_package': list(by_package),
         })
+    
+    @action(detail=False, methods=['get'])
+    def track(self, request):
+        """Public endpoint for customers to track their order"""
+        phone = request.query_params.get('phone', '').strip()
+        order_id = request.query_params.get('order_id', '').strip()
+        
+        if not phone and not order_id:
+            return Response({
+                'error': 'Please provide phone number or order ID'
+            }, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Search by phone number first
+        submission = None
+        if phone:
+            # Clean phone number - remove spaces and dashes
+            clean_phone = phone.replace(' ', '').replace('-', '')
+            submission = Submission.objects.filter(phone__icontains=clean_phone).order_by('-submitted_at').first()
+        
+        # If not found by phone, try order ID
+        if not submission and order_id:
+            try:
+                submission = Submission.objects.get(id=order_id)
+            except Submission.DoesNotExist:
+                pass
+        
+        if not submission:
+            return Response({
+                'error': 'Order not found'
+            }, status=status.HTTP_404_NOT_FOUND)
+        
+        # Return limited public information (no admin notes, payment refs, etc.)
+        return Response({
+            'id': submission.id,
+            'businessName': submission.business_name,
+            'businessType': submission.business_type,
+            'packageId': submission.package_id,
+            'status': submission.status,
+            'submittedAt': submission.submitted_at,
+            'paymentStatus': submission.payment_status,
+            'estimatedDelivery': submission.estimated_delivery,
+        })
+
 
 class PortfolioItemViewSet(viewsets.ModelViewSet):
     queryset = PortfolioItem.objects.all().order_by('-created_at')
