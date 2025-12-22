@@ -1,6 +1,10 @@
 import { WebsiteSubmission, PortfolioItem } from './types';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
+// Automatically detect API URL based on environment
+const API_URL = import.meta.env.VITE_API_URL ||
+    (window.location.hostname === 'localhost'
+        ? 'http://localhost:8000/api'
+        : `${window.location.origin}/api`);
 
 const getAuthHeaders = () => {
     const token = localStorage.getItem('admin_token');
