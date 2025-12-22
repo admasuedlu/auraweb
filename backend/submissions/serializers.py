@@ -17,6 +17,23 @@ class SubmissionSerializer(serializers.ModelSerializer):
     specialNotes = serializers.CharField(source='special_notes', required=False, allow_blank=True)
     logoUrl = serializers.CharField(source='logo_url', required=False, allow_blank=True)
     imageUrls = serializers.JSONField(source='image_urls', required=False)
+    
+    # Payment fields
+    paymentStatus = serializers.CharField(source='payment_status', required=False)
+    paymentTxRef = serializers.CharField(source='payment_tx_ref', required=False, allow_blank=True, allow_null=True)
+    paymentAmount = serializers.DecimalField(source='payment_amount', max_digits=10, decimal_places=2, required=False, allow_null=True)
+    paidAt = serializers.DateTimeField(source='paid_at', required=False, allow_null=True)
+    
+    # Admin fields
+    adminNotes = serializers.CharField(source='admin_notes', required=False, allow_blank=True, allow_null=True)
+    assignedTo = serializers.CharField(source='assigned_to', required=False, allow_blank=True, allow_null=True)
+    estimatedDelivery = serializers.DateField(source='estimated_delivery', required=False, allow_null=True)
+    
+    # Computed fields
+    depositAmount = serializers.SerializerMethodField()
+    
+    def get_depositAmount(self, obj):
+        return obj.deposit_amount
 
     class Meta:
         model = Submission
@@ -25,7 +42,11 @@ class SubmissionSerializer(serializers.ModelSerializer):
             'businessType', 'phone', 'email', 'address', 'googleMapsLink',
             'aboutUs', 'services', 'workingHours', 'socialLinks',
             'language', 'primaryColor', 'themeStyle', 'specialNotes',
-            'logoUrl', 'imageUrls'
+            'logoUrl', 'imageUrls',
+            # Payment fields
+            'paymentStatus', 'paymentTxRef', 'paymentAmount', 'paidAt', 'depositAmount',
+            # Admin fields
+            'adminNotes', 'assignedTo', 'estimatedDelivery'
         ]
 
 class PortfolioItemSerializer(serializers.ModelSerializer):

@@ -11,6 +11,24 @@ const getAuthHeaders = () => {
     return token ? { 'Authorization': `Token ${token}` } : {};
 };
 
+export interface DashboardStats {
+    total_submissions: number;
+    today_submissions: number;
+    pending_review: number;
+    in_progress: number;
+    completed: number;
+    total_revenue: number;
+    pending_payments: number;
+    by_package: { package_id: string; count: number }[];
+}
+
+export interface PaymentLink {
+    checkout_url: string;
+    tx_ref: string;
+    amount: number;
+    currency: string;
+}
+
 export const api = {
     async fetchSubmissions(): Promise<WebsiteSubmission[]> {
         const res = await fetch(`${API_URL}/submissions/`, {
@@ -36,7 +54,7 @@ export const api = {
 
     async updateSubmission(id: string, updates: Partial<WebsiteSubmission>): Promise<void> {
         const res = await fetch(`${API_URL}/submissions/${id}/`, {
-            method: 'PUT',
+            method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
                 ...getAuthHeaders()
@@ -58,6 +76,38 @@ export const api = {
         if (!res.ok) throw new Error('Failed to upload file');
         const data = await res.json();
         return data.url;
+    },
+
+    // Dashboard APIs
+    async fetchDashboardStats(): Promise<DashboardStats> {
+        const res = await fetch(`${API_URL}/submissions/dashboard_stats/`, {
+            headers: { ...getAuthHeaders() }
+        });
+        if (res.status === 401 || res.status === 403) throw new Error('Unauthorized');
+        if (!res.ok) throw new Error('Failed to fetch stats');
+        return res.json();
+    },
+
+    // Payment APIs
+    async createPaymentLink(submissionId: string): Promise<PaymentLink> {
+        const res = await fetch(`${API_URL}/submissions/${submissionId}/create_payment/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                ...getAuthHeaders()
+            },
+        });
+        if (!res.ok) {
+            const error = await res.json();
+            throw new Error(error.error || 'Failed to create payment link');
+        }
+        return res.json();
+    },
+
+    async verifyPayment(txRef: string): Promise<{ status: string; business_name: string; package: string }> {
+        const res = await fetch(`${API_URL}/submissions/verify_payment/?tx_ref=${txRef}`);
+        if (!res.ok) throw new Error('Failed to verify payment');
+        return res.json();
     },
 
     // Portfolio APIs
@@ -88,3 +138,4 @@ export const api = {
         if (!res.ok) throw new Error('Failed to delete portfolio item');
     }
 };
+
