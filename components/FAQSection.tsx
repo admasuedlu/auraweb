@@ -111,7 +111,7 @@ const FAQSection: React.FC = () => {
                 <div className="text-center mt-12">
                     <p className="text-slate-500 mb-4">Still have questions?</p>
                     <a
-                        href="https://wa.me/251911234567?text=Hello! I have a question about your services."
+                        href="https://wa.me/251939447263?text=Hello! I have a question about your services."
                         target="_blank"
                         rel="noopener noreferrer"
                         className="inline-flex items-center gap-2 bg-green-500 text-white px-6 py-3 rounded-xl font-bold hover:bg-green-600 transition-all"

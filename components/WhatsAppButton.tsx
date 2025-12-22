@@ -7,7 +7,7 @@ interface WhatsAppButtonProps {
 }
 
 const WhatsAppButton: React.FC<WhatsAppButtonProps> = ({
-    phoneNumber = '+251911234567', // Default number - update this
+    phoneNumber = '+251939447263', // AuraWeb WhatsApp
     message = 'Hello! I am interested in getting a website built.'
 }) => {
     const [isHovered, setIsHovered] = useState(false);

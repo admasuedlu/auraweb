@@ -161,7 +161,7 @@ const App: React.FC = () => {
                 <div>
                   <h4 className="font-bold text-slate-800 mb-4">Contact Us</h4>
                   <ul className="space-y-2 text-sm text-slate-500">
-                    <li>📞 +251 911 234 567</li>
+                    <li>📞 +251 939 447 263</li>
                     <li>✉️ info@auraweb.com</li>
                     <li>📍 Addis Ababa, Ethiopia</li>
                   </ul>

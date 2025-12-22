@@ -158,9 +158,9 @@ const OrderTracking: React.FC = () => {
                                     <p className="text-slate-500">Order ID: {order.id}</p>
                                 </div>
                                 <span className={`px-4 py-2 rounded-full text-sm font-bold ${order.status === 'Completed' ? 'bg-green-100 text-green-700' :
-                                        order.status === 'In Progress' ? 'bg-purple-100 text-purple-700' :
-                                            order.status === 'Payment Received' ? 'bg-blue-100 text-blue-700' :
-                                                'bg-yellow-100 text-yellow-700'
+                                    order.status === 'In Progress' ? 'bg-purple-100 text-purple-700' :
+                                        order.status === 'Payment Received' ? 'bg-blue-100 text-blue-700' :
+                                            'bg-yellow-100 text-yellow-700'
                                     }`}>
                                     {order.status}
                                 </span>
@@ -200,8 +200,8 @@ const OrderTracking: React.FC = () => {
                                         <div key={step.id} className="flex gap-6 relative">
                                             {/* Step Icon */}
                                             <div className={`w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 z-10 ${step.status === 'completed' ? 'bg-blue-600 text-white' :
-                                                    step.status === 'current' ? 'bg-blue-600 text-white ring-4 ring-blue-100' :
-                                                        'bg-slate-100 text-slate-400'
+                                                step.status === 'current' ? 'bg-blue-600 text-white ring-4 ring-blue-100' :
+                                                    'bg-slate-100 text-slate-400'
                                                 }`}>
                                                 {step.status === 'completed' ? (
                                                     <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -249,7 +249,7 @@ const OrderTracking: React.FC = () => {
                     <p className="text-slate-500 mb-4">Need help with your order?</p>
                     <div className="flex flex-col sm:flex-row gap-4 justify-center">
                         <a
-                            href="https://wa.me/251911234567?text=Hello! I need help with my order."
+                            href="https://wa.me/251939447263?text=Hello! I need help with my order."
                             target="_blank"
                             rel="noopener noreferrer"
                             className="inline-flex items-center justify-center gap-2 bg-green-500 text-white px-6 py-3 rounded-xl font-bold hover:bg-green-600 transition-all"
